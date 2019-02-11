@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.datacleaner.components.machinelearning.api.MLClassificationMetadata;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainer;
+import org.datacleaner.components.machinelearning.api.MLClassificationTrainerCallback;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainerRecord;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainingOptions;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
@@ -20,7 +21,7 @@ public class RandomForestClassificationTrainer implements MLClassificationTraine
     }
 
     @Override
-    public MLClassifier train(Iterable<MLClassificationTrainerRecord> data) {
+    public MLClassifier train(Iterable<MLClassificationTrainerRecord> data, MLClassificationTrainerCallback callback) {
         final int epochs = trainingOptions.getEpochs();
         final int numTrees = trainingOptions.getLayerSize();
 
@@ -58,7 +59,8 @@ public class RandomForestClassificationTrainer implements MLClassificationTraine
         }
 
         final RandomForest randomForest = new RandomForest(x, y, numTrees);
-        final MLClassificationMetadata classificationMetadata = new MLClassificationMetadata(classifications);
+        final MLClassificationMetadata classificationMetadata =
+                new MLClassificationMetadata(trainingOptions.getClassificationType(), classifications, trainingOptions.getFeatureNames());
         return new SmileClassifier(randomForest, classificationMetadata);
     }
 

@@ -7,10 +7,15 @@ import java.util.List;
 public final class MLClassificationMetadata implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    private final Class<?> classificationType;
     private final List<Object> classifications;
+    private final List<String> featureNames;
 
-    public MLClassificationMetadata(List<Object> classifications) {
+    public MLClassificationMetadata(Class<?> classificationType, List<Object> classifications, List<String> featureNames) {
+        this.classificationType = classificationType;
         this.classifications = classifications;
+        this.featureNames = featureNames;
     }
 
     public int getClassCount() {
@@ -23,5 +28,17 @@ public final class MLClassificationMetadata implements Serializable {
 
     public List<Object> getClassifications() {
         return Collections.unmodifiableList(classifications);
+    }
+
+    public int getFeatureCount() {
+        return featureNames.size();
+    }
+    
+    public List<String> getFeatureNames() {
+        return Collections.unmodifiableList(featureNames);
+    }
+
+    public Class<?> getClassificationType() {
+        return classificationType;
     }
 }

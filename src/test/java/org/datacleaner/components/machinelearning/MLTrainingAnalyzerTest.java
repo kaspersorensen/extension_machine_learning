@@ -60,15 +60,15 @@ public class MLTrainingAnalyzerTest {
                     randomLow()), 1);
         }
 
-        final MLTrainingResult result = analyzer.getResult();
-        final MLClassificationMetadata metadata = result.getClassifier().getMetadata();
+        final MLAnalyzerResult result = analyzer.getResult();
+        final MLClassificationMetadata metadata = result.getTrainedClassifier().getMetadata();
 
         assertEquals(RED, metadata.getClassification(
-                result.getClassifier().classify(new double[] { 1, 0, 0 }).getBestClassificationIndex()));
+                result.getTrainedClassifier().classify(new double[] { 1, 0, 0 }).getBestClassificationIndex()));
         assertEquals(GREEN, metadata.getClassification(
-                result.getClassifier().classify(new double[] { 0, 1, 0 }).getBestClassificationIndex()));
+                result.getTrainedClassifier().classify(new double[] { 0, 1, 0 }).getBestClassificationIndex()));
         assertEquals(BLUE, metadata.getClassification(
-                result.getClassifier().classify(new double[] { 0, 0, 1 }).getBestClassificationIndex()));
+                result.getTrainedClassifier().classify(new double[] { 0, 0, 1 }).getBestClassificationIndex()));
 
     }
 

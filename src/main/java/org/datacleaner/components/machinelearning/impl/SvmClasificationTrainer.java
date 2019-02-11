@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.datacleaner.components.machinelearning.api.MLClassificationMetadata;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainer;
+import org.datacleaner.components.machinelearning.api.MLClassificationTrainerCallback;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainerRecord;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainingOptions;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
@@ -21,7 +22,7 @@ public class SvmClasificationTrainer implements MLClassificationTrainer {
     }
 
     @Override
-    public MLClassifier train(Iterable<MLClassificationTrainerRecord> data) {
+    public MLClassifier train(Iterable<MLClassificationTrainerRecord> data, MLClassificationTrainerCallback callback) {
         final int epochs = trainingOptions.getEpochs();
 
         final List<double[]> trainingInstances = new ArrayList<>();
@@ -52,11 +53,14 @@ public class SvmClasificationTrainer implements MLClassificationTrainer {
 
         for (int j = 0; j < epochs; j++) {
             svm.learn(x, y);
+            callback.epochDone(j + 1);
         }
         svm.finish();
         svm.trainPlattScaling(x, y);
 
-        final MLClassificationMetadata metadata = new MLClassificationMetadata(classifications);
+        final List<String> featureNames = trainingOptions.getFeatureNames();
+        final MLClassificationMetadata metadata =
+                new MLClassificationMetadata(trainingOptions.getClassificationType(), classifications, featureNames);
         return new SmileClassifier(svm, metadata);
     }
 

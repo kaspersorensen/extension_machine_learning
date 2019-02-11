@@ -1,6 +1,8 @@
 package org.datacleaner.components.machinelearning.api;
 
-public interface MLClassifier {
+import java.io.Serializable;
+
+public interface MLClassifier extends Serializable {
     
     MLClassificationMetadata getMetadata();
 

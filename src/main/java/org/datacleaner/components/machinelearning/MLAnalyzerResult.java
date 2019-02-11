@@ -4,23 +4,23 @@ import org.datacleaner.api.AnalyzerResult;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
 import org.datacleaner.result.Crosstab;
 
-public class MLTrainingResult implements AnalyzerResult {
+public class MLAnalyzerResult implements AnalyzerResult {
 
     private static final long serialVersionUID = 1L;
 
-    private final MLClassifier classifier;
+    private final MLClassifier trainedClassifier;
     private final Crosstab<Integer> trainedRecordsConfusionMatrix;
     private final Crosstab<Integer> crossValidationConfusionMatrix;
 
-    public MLTrainingResult(MLClassifier classifier, Crosstab<Integer> trainedRecordsConfusionMatrix,
+    public MLAnalyzerResult(MLClassifier trainedClassifier, Crosstab<Integer> trainedRecordsConfusionMatrix,
             Crosstab<Integer> crossValidationConfusionMatrix) {
-        this.classifier = classifier;
+        this.trainedClassifier = trainedClassifier;
         this.trainedRecordsConfusionMatrix = trainedRecordsConfusionMatrix;
         this.crossValidationConfusionMatrix = crossValidationConfusionMatrix;
     }
 
-    public MLClassifier getClassifier() {
-        return classifier;
+    public MLClassifier getTrainedClassifier() {
+        return trainedClassifier;
     }
 
     public Crosstab<Integer> getCrossValidationConfusionMatrix() {

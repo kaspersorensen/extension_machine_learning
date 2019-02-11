@@ -7,6 +7,7 @@ import org.datacleaner.api.Provided;
 import org.datacleaner.api.RendererBean;
 import org.datacleaner.bootstrap.WindowContext;
 import org.datacleaner.panels.DCPanel;
+import org.datacleaner.result.Crosstab;
 import org.datacleaner.result.CrosstabResult;
 import org.datacleaner.result.renderer.AbstractRenderer;
 import org.datacleaner.result.renderer.RendererFactory;
@@ -17,7 +18,7 @@ import org.datacleaner.widgets.result.DefaultCrosstabResultSwingRenderer;
 import org.jdesktop.swingx.VerticalLayout;
 
 @RendererBean(SwingRenderingFormat.class)
-public class MLTrainingResultSwingRenderer extends AbstractRenderer<MLTrainingResult, JComponent> {
+public class MLTrainingResultSwingRenderer extends AbstractRenderer<MLAnalyzerResult, JComponent> {
 
     @Inject
     @Provided
@@ -28,22 +29,28 @@ public class MLTrainingResultSwingRenderer extends AbstractRenderer<MLTrainingRe
     WindowContext _windowContext;
 
     @Override
-    public JComponent render(MLTrainingResult result) {
+    public JComponent render(MLAnalyzerResult result) {
         final DefaultCrosstabResultSwingRenderer crosstabRenderer =
                 new DefaultCrosstabResultSwingRenderer(_windowContext, _rendererFactory);
 
-        final JComponent trainedRecordsConfusionMatrix =
-                crosstabRenderer.render(new CrosstabResult(result.getTrainedRecordsConfusionMatrix()));
-        final JComponent crossValidationConfusionMatrix =
-                crosstabRenderer.render(new CrosstabResult(result.getCrossValidationConfusionMatrix()));
-
         final DCPanel panel = new DCPanel();
         panel.setLayout(new VerticalLayout(WidgetUtils.BORDER_WIDE_WIDTH));
-        panel.add(DCLabel.dark("MODEL TRAINED!"));
-        panel.add(DCLabel.dark("Confusion matrix (trained records)"));
-        panel.add(trainedRecordsConfusionMatrix);
-        panel.add(DCLabel.dark("Confusion matrix (cross-validation records)"));
-        panel.add(crossValidationConfusionMatrix);
+        
+        if (result.getTrainedClassifier() != null) {
+            panel.add(DCLabel.dark("MODEL TRAINED!"));
+        }
+        
+        final Crosstab<Integer> trainedRecordsConfusionMatrix = result.getTrainedRecordsConfusionMatrix();
+        if (trainedRecordsConfusionMatrix != null) {
+            panel.add(DCLabel.dark("Confusion matrix (trained records)"));
+            panel.add(crosstabRenderer.render(new CrosstabResult(trainedRecordsConfusionMatrix)));
+        }
+
+        final Crosstab<Integer> crossValidationConfusionMatrix = result.getCrossValidationConfusionMatrix();
+        if (trainedRecordsConfusionMatrix != null) {
+            panel.add(DCLabel.dark("Confusion matrix (cross-validation records)"));
+            panel.add(crosstabRenderer.render(new CrosstabResult(crossValidationConfusionMatrix)));
+        }
         return panel;
     }
 
