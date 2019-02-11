@@ -2,17 +2,38 @@ package org.datacleaner.components.machinelearning;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.datacleaner.api.InputColumn;
 import org.datacleaner.components.machinelearning.api.MLClassificationMetadata;
 import org.datacleaner.data.MockInputColumn;
 import org.datacleaner.data.MockInputRow;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+@RunWith(Parameterized.class)
 public class MLTrainingAnalyzerTest {
 
     private static final String RED = "red";
     private static final String GREEN = "green";
     private static final String BLUE = "blue";
+
+    @Parameters
+    public static final List<Object[]> data() {
+        return Arrays.asList(
+                new Object[] {MLAlgorithm.RANDOM_FOREST},
+                new Object[] {MLAlgorithm.SVM}
+        );
+    }
+
+    private final MLAlgorithm algorithm;
+    
+    public MLTrainingAnalyzerTest(MLAlgorithm algorithm) {
+        this.algorithm = algorithm;
+    }
 
     @SuppressWarnings("unchecked")
     @Test
@@ -23,6 +44,7 @@ public class MLTrainingAnalyzerTest {
         final MockInputColumn<Double> blue = new MockInputColumn<>(BLUE);
 
         final MLTrainingAnalyzer analyzer = new MLTrainingAnalyzer();
+        analyzer.algorithm = algorithm;
         analyzer.classification = color;
         analyzer.features = new InputColumn[] { red, green, blue };
         analyzer.epochs = 10;
@@ -41,12 +63,12 @@ public class MLTrainingAnalyzerTest {
         final MLTrainingResult result = analyzer.getResult();
         final MLClassificationMetadata metadata = result.getClassifier().getMetadata();
 
-        assertEquals(RED, metadata
-                .getClassification(result.getClassifier().classify(new double[] { 1, 0, 0 }).getBestClassificationIndex()));
-        assertEquals(GREEN, metadata
-                .getClassification(result.getClassifier().classify(new double[] { 0, 1, 0 }).getBestClassificationIndex()));
-        assertEquals(BLUE, metadata
-                .getClassification(result.getClassifier().classify(new double[] { 0, 0, 1 }).getBestClassificationIndex()));
+        assertEquals(RED, metadata.getClassification(
+                result.getClassifier().classify(new double[] { 1, 0, 0 }).getBestClassificationIndex()));
+        assertEquals(GREEN, metadata.getClassification(
+                result.getClassifier().classify(new double[] { 0, 1, 0 }).getBestClassificationIndex()));
+        assertEquals(BLUE, metadata.getClassification(
+                result.getClassifier().classify(new double[] { 0, 0, 1 }).getBestClassificationIndex()));
 
     }
 

@@ -22,12 +22,7 @@ public class SvmClasificationTrainer implements MLClassificationTrainer {
 
     @Override
     public MLClassifier train(Iterable<MLClassificationTrainerRecord> data) {
-        final int numClasses = trainingOptions.getEpochs();
         final int epochs = trainingOptions.getEpochs();
-
-        // TODO: Consider hyper parameters
-        final SVM<double[]> svm =
-                new SVM<double[]>(new GaussianKernel(8.0), 5.0, numClasses, SVM.Multiclass.ONE_VS_ONE);
 
         final List<double[]> trainingInstances = new ArrayList<>();
         final List<Integer> responseVariables = new ArrayList<>();
@@ -48,6 +43,10 @@ public class SvmClasificationTrainer implements MLClassificationTrainer {
             responseVariables.add(classificationIndex);
         }
 
+        final int numClasses = classifications.size();
+        // TODO: Consider hyper parameters
+        final SVM<double[]> svm =
+                new SVM<double[]>(new GaussianKernel(8.0), 5.0, numClasses, SVM.Multiclass.ONE_VS_ONE);
         final double[][] x = trainingInstances.toArray(new double[trainingInstances.size()][]);
         final int[] y = responseVariables.stream().mapToInt(i -> i).toArray();
 

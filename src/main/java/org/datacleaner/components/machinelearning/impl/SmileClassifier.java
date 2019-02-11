@@ -21,10 +21,10 @@ public class SmileClassifier implements MLClassifier {
     @Override
     public MLClassification classify(double[] featureValues) {
         if (smileClassifier instanceof SoftClassifier) {
-            final double[] posteriori = new double[metadata.getClassCount()];
             final SoftClassifier<double[]> softClassifier = (SoftClassifier<double[]>) smileClassifier;
-            softClassifier.predict(featureValues, posteriori);
 
+            final double[] posteriori = new double[metadata.getClassCount()];
+            softClassifier.predict(featureValues, posteriori);
             return new MLConfidenceClassification(posteriori);
         }
 
