@@ -8,4 +8,6 @@ public interface MLFeatureModifier extends Serializable {
 
     int getFeatureCount();
 
+    MLFeatureModifierType getType();
+
 }

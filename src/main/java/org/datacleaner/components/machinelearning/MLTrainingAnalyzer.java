@@ -30,9 +30,10 @@ import org.datacleaner.api.InputRow;
 import org.datacleaner.api.MappedProperty;
 import org.datacleaner.api.NumberProperty;
 import org.datacleaner.api.Provided;
+import org.datacleaner.api.Validate;
+import org.datacleaner.components.machinelearning.api.MLClassificationRecord;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainer;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainerCallback;
-import org.datacleaner.components.machinelearning.api.MLClassificationRecord;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainingOptions;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
 import org.datacleaner.components.machinelearning.api.MLFeatureModifier;
@@ -41,6 +42,7 @@ import org.datacleaner.components.machinelearning.api.MLFeatureModifierBuilderFa
 import org.datacleaner.components.machinelearning.api.MLFeatureModifierType;
 import org.datacleaner.components.machinelearning.impl.MLClassificationRecordImpl;
 import org.datacleaner.components.machinelearning.impl.MLFeatureModifierBuilderFactoryImpl;
+import org.datacleaner.components.machinelearning.impl.MLFeatureUtils;
 import org.datacleaner.result.Crosstab;
 import org.datacleaner.util.Percentage;
 import org.slf4j.Logger;
@@ -98,6 +100,11 @@ public class MLTrainingAnalyzer implements Analyzer<MLAnalyzerResult> {
     private Collection<MLClassificationRecord> crossValidationRecords;
     private List<MLFeatureModifierBuilder> featureModifierBuilders;
 
+    @Validate
+    public void validate() {
+        MLComponentUtils.validateTrainingMapping(featureColumns, featureModifierTypes);
+    }
+
     @Initialize
     public void init() {
         recordCounter = new AtomicInteger();
@@ -145,7 +152,8 @@ public class MLTrainingAnalyzer implements Analyzer<MLAnalyzerResult> {
         final MLClassificationTrainer trainer = algorithm.createTrainer(options);
         final int epochs = options.getEpochs();
         log("Training " + algorithm.getName() + " model starting. Records=" + trainingRecords.size() + ", Columns="
-                + columnNames.size() + ", Epochs=" + epochs + ".");
+                + columnNames.size() + ", Features=" + MLFeatureUtils.getFeatureCount(featureModifiers) + ", Epochs="
+                + epochs + ".");
         final MLClassifier classifier =
                 trainer.train(trainingRecords, featureModifiers, new MLClassificationTrainerCallback() {
                     @Override

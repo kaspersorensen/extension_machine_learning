@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.datacleaner.components.machinelearning.api.MLFeatureModifier;
+import org.datacleaner.components.machinelearning.api.MLFeatureModifierType;
 
 import com.google.common.collect.Maps;
 
@@ -45,4 +46,8 @@ public class VectorOneHotEncodingFeatureModifier implements MLFeatureModifier {
         return values.size();
     }
 
+    @Override
+    public MLFeatureModifierType getType() {
+        return MLFeatureModifierType.VECTOR_ONE_HOT_ENCODING;
+    }
 }

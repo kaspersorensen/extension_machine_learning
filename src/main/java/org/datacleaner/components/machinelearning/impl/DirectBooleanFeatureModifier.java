@@ -2,6 +2,7 @@ package org.datacleaner.components.machinelearning.impl;
 
 import org.datacleaner.components.convert.ConvertToBooleanTransformer;
 import org.datacleaner.components.machinelearning.api.MLFeatureModifier;
+import org.datacleaner.components.machinelearning.api.MLFeatureModifierType;
 
 public class DirectBooleanFeatureModifier implements MLFeatureModifier {
 
@@ -19,6 +20,11 @@ public class DirectBooleanFeatureModifier implements MLFeatureModifier {
     @Override
     public int getFeatureCount() {
         return 1;
+    }
+
+    @Override
+    public MLFeatureModifierType getType() {
+        return MLFeatureModifierType.DIRECT_BOOL;
     }
 
 }

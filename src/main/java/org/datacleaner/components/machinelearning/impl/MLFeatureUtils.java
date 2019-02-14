@@ -36,7 +36,7 @@ public class MLFeatureUtils {
         return featureValues;
     }
 
-    private static int getFeatureCount(Collection<MLFeatureModifier> featureModifiers) {
+    public static int getFeatureCount(Collection<MLFeatureModifier> featureModifiers) {
         return featureModifiers.stream().mapToInt(f -> f.getFeatureCount()).sum();
     }
 }

@@ -3,6 +3,7 @@ package org.datacleaner.components.machinelearning.impl;
 import java.util.Collection;
 
 import org.datacleaner.components.machinelearning.api.MLFeatureModifier;
+import org.datacleaner.components.machinelearning.api.MLFeatureModifierType;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
@@ -57,4 +58,8 @@ public class VectorNGramFeatureModifier implements MLFeatureModifier {
         return grams.length;
     }
 
+    @Override
+    public MLFeatureModifierType getType() {
+        return MLFeatureModifierType.getNGramType(n);
+    }
 }

@@ -35,7 +35,7 @@ public class MLClassificationTransformer implements Transformer {
     }
 
     @Configured
-    InputColumn<Object>[] features;
+    InputColumn<?>[] features;
 
     @Configured
     @FileProperty(accessMode = FileAccessMode.OPEN, extension = ".model.ser")
@@ -53,15 +53,7 @@ public class MLClassificationTransformer implements Transformer {
         }
         classifier = (MLClassifier) SerializationUtils.deserialize(Files.toByteArray(modelFile));
 
-        final int modelFeatures = classifier.getMetadata().getColumnCount();
-        if (features.length > modelFeatures) {
-            throw new IllegalArgumentException("Model defines " + modelFeatures + " features, but too few ("
-                    + features.length + ") are configured.");
-        }
-        if (features.length < modelFeatures) {
-            throw new IllegalArgumentException("Model defines " + modelFeatures + " features, but too many ("
-                    + features.length + ") are configured.");
-        }
+        MLComponentUtils.validateClassifierMapping(classifier, features);
     }
 
     @Initialize

@@ -30,7 +30,7 @@ public class MLEvaluationAnalyzer implements Analyzer<MLAnalyzerResult> {
     InputColumn<?> classification;
 
     @Configured
-    InputColumn<Number>[] features;
+    InputColumn<?>[] features;
 
     @Configured
     @FileProperty(accessMode = FileAccessMode.OPEN, extension = ".model.ser")
@@ -46,15 +46,7 @@ public class MLEvaluationAnalyzer implements Analyzer<MLAnalyzerResult> {
         }
         classifier = (MLClassifier) SerializationUtils.deserialize(Files.toByteArray(modelFile));
 
-        final int modelFeatures = classifier.getMetadata().getColumnCount();
-        if (features.length > modelFeatures) {
-            throw new IllegalArgumentException("Model defines " + modelFeatures + " features, but too few ("
-                    + features.length + ") are configured.");
-        }
-        if (features.length < modelFeatures) {
-            throw new IllegalArgumentException("Model defines " + modelFeatures + " features, but too many ("
-                    + features.length + ") are configured.");
-        }
+        MLComponentUtils.validateClassifierMapping(classifier, features);
     }
 
     @Initialize
@@ -65,8 +57,7 @@ public class MLEvaluationAnalyzer implements Analyzer<MLAnalyzerResult> {
 
     @Override
     public void run(InputRow row, int distinctCount) {
-        final MLClassificationRecord record =
-                MLClassificationRecordImpl.forTraining(row, classification, features);
+        final MLClassificationRecord record = MLClassificationRecordImpl.forTraining(row, classification, features);
         if (record == null) {
             return;
         }

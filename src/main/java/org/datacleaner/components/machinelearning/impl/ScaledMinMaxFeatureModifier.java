@@ -2,6 +2,7 @@ package org.datacleaner.components.machinelearning.impl;
 
 import org.datacleaner.components.convert.ConvertToNumberTransformer;
 import org.datacleaner.components.machinelearning.api.MLFeatureModifier;
+import org.datacleaner.components.machinelearning.api.MLFeatureModifierType;
 
 public class ScaledMinMaxFeatureModifier implements MLFeatureModifier {
 
@@ -31,4 +32,8 @@ public class ScaledMinMaxFeatureModifier implements MLFeatureModifier {
         return 1;
     }
 
+    @Override
+    public MLFeatureModifierType getType() {
+        return MLFeatureModifierType.SCALED_MIN_MAX;
+    }
 }

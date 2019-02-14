@@ -42,4 +42,18 @@ public enum MLFeatureModifierType implements HasName {
     public String getName() {
         return name;
     }
+
+    public static MLFeatureModifierType getNGramType(int n) {
+        switch (n) {
+        case 2:
+            return MLFeatureModifierType.VECTOR_2_GRAM;
+        case 3:
+            return MLFeatureModifierType.VECTOR_3_GRAM;
+        case 4:
+            return MLFeatureModifierType.VECTOR_4_GRAM;
+        case 5:
+            return MLFeatureModifierType.VECTOR_5_GRAM;
+        }
+        throw new UnsupportedOperationException("No n-gram vector defined for n=" + n);
+    }
 }
