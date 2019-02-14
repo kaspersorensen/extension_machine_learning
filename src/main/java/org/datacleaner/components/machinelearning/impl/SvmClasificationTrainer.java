@@ -6,9 +6,10 @@ import java.util.List;
 import org.datacleaner.components.machinelearning.api.MLClassificationMetadata;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainer;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainerCallback;
-import org.datacleaner.components.machinelearning.api.MLClassificationTrainerRecord;
+import org.datacleaner.components.machinelearning.api.MLClassificationRecord;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainingOptions;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
+import org.datacleaner.components.machinelearning.api.MLFeatureModifier;
 
 import smile.classification.SVM;
 import smile.math.kernel.GaussianKernel;
@@ -22,14 +23,15 @@ public class SvmClasificationTrainer implements MLClassificationTrainer {
     }
 
     @Override
-    public MLClassifier train(Iterable<MLClassificationTrainerRecord> data, MLClassificationTrainerCallback callback) {
+    public MLClassifier train(Iterable<MLClassificationRecord> data, List<MLFeatureModifier> featureModifiers,
+            MLClassificationTrainerCallback callback) {
         final int epochs = trainingOptions.getEpochs();
 
         final List<double[]> trainingInstances = new ArrayList<>();
         final List<Integer> responseVariables = new ArrayList<>();
         final List<Object> classifications = new ArrayList<>();
 
-        for (MLClassificationTrainerRecord record : data) {
+        for (MLClassificationRecord record : data) {
             final Object classification = record.getClassification();
 
             int classificationIndex = classifications.indexOf(classification);
@@ -38,7 +40,7 @@ public class SvmClasificationTrainer implements MLClassificationTrainer {
                 classificationIndex = classifications.size() - 1;
             }
 
-            final double[] features = record.getFeatureValues();
+            final double[] features = MLFeatureUtils.generateFeatureValues(record, featureModifiers);
 
             trainingInstances.add(features);
             responseVariables.add(classificationIndex);
@@ -58,9 +60,9 @@ public class SvmClasificationTrainer implements MLClassificationTrainer {
         svm.finish();
         svm.trainPlattScaling(x, y);
 
-        final List<String> featureNames = trainingOptions.getFeatureNames();
-        final MLClassificationMetadata metadata =
-                new MLClassificationMetadata(trainingOptions.getClassificationType(), classifications, featureNames);
+        final List<String> featureNames = trainingOptions.getColumnNames();
+        final MLClassificationMetadata metadata = new MLClassificationMetadata(trainingOptions.getClassificationType(),
+                classifications, featureNames, featureModifiers);
         return new SmileClassifier(svm, metadata);
     }
 

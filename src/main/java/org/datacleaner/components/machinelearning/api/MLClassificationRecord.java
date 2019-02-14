@@ -1,8 +1,8 @@
 package org.datacleaner.components.machinelearning.api;
 
-public interface MLClassificationTrainerRecord {
+public interface MLClassificationRecord {
 
     public Object getClassification();
     
-    public double[] getFeatureValues();
+    public Object[] getRecordValues();
 }

@@ -7,15 +7,17 @@ public class MLClassificationTrainingOptions implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final List<String> featureNames;
+    private final List<String> columnNames;
     private final int layerSize;
     private final int epochs;
     private final Class<?> classificationType;
+    private final List<MLFeatureModifier> featureModifiers;
 
-    public MLClassificationTrainingOptions(Class<?> classificationType, List<String> featureNames, int epochs,
-            int layerSize) {
+    public MLClassificationTrainingOptions(Class<?> classificationType, List<String> columnNames,
+            List<MLFeatureModifier> featureModifiers, int epochs, int layerSize) {
         this.classificationType = classificationType;
-        this.featureNames = featureNames;
+        this.columnNames = columnNames;
+        this.featureModifiers = featureModifiers;
         this.epochs = epochs;
         this.layerSize = layerSize;
     }
@@ -28,8 +30,12 @@ public class MLClassificationTrainingOptions implements Serializable {
         return layerSize;
     }
 
-    public List<String> getFeatureNames() {
-        return featureNames;
+    public List<String> getColumnNames() {
+        return columnNames;
+    }
+
+    public List<MLFeatureModifier> getFeatureModifiers() {
+        return featureModifiers;
     }
 
     public Class<?> getClassificationType() {

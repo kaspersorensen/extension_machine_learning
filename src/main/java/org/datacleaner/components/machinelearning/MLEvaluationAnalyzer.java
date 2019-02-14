@@ -15,9 +15,9 @@ import org.datacleaner.api.FileProperty.FileAccessMode;
 import org.datacleaner.api.InputColumn;
 import org.datacleaner.api.InputRow;
 import org.datacleaner.api.Validate;
-import org.datacleaner.components.machinelearning.api.MLClassificationTrainerRecord;
+import org.datacleaner.components.machinelearning.api.MLClassificationRecord;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
-import org.datacleaner.components.machinelearning.impl.MLClassificationTrainerRecordImpl;
+import org.datacleaner.components.machinelearning.impl.MLClassificationRecordImpl;
 import org.datacleaner.result.Crosstab;
 
 import com.google.common.io.Files;
@@ -46,7 +46,7 @@ public class MLEvaluationAnalyzer implements Analyzer<MLAnalyzerResult> {
         }
         classifier = (MLClassifier) SerializationUtils.deserialize(Files.toByteArray(modelFile));
 
-        final int modelFeatures = classifier.getMetadata().getFeatureCount();
+        final int modelFeatures = classifier.getMetadata().getColumnCount();
         if (features.length > modelFeatures) {
             throw new IllegalArgumentException("Model defines " + modelFeatures + " features, but too few ("
                     + features.length + ") are configured.");
@@ -65,8 +65,8 @@ public class MLEvaluationAnalyzer implements Analyzer<MLAnalyzerResult> {
 
     @Override
     public void run(InputRow row, int distinctCount) {
-        final MLClassificationTrainerRecord record =
-                MLClassificationTrainerRecordImpl.of(row, classification, features);
+        final MLClassificationRecord record =
+                MLClassificationRecordImpl.forTraining(row, classification, features);
         if (record == null) {
             return;
         }

@@ -6,9 +6,10 @@ import java.util.List;
 import org.datacleaner.components.machinelearning.api.MLClassificationMetadata;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainer;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainerCallback;
-import org.datacleaner.components.machinelearning.api.MLClassificationTrainerRecord;
+import org.datacleaner.components.machinelearning.api.MLClassificationRecord;
 import org.datacleaner.components.machinelearning.api.MLClassificationTrainingOptions;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
+import org.datacleaner.components.machinelearning.api.MLFeatureModifier;
 
 import smile.classification.RandomForest;
 
@@ -21,7 +22,8 @@ public class RandomForestClassificationTrainer implements MLClassificationTraine
     }
 
     @Override
-    public MLClassifier train(Iterable<MLClassificationTrainerRecord> data, MLClassificationTrainerCallback callback) {
+    public MLClassifier train(Iterable<MLClassificationRecord> data, List<MLFeatureModifier> featureModifiers,
+            MLClassificationTrainerCallback callback) {
         final int epochs = trainingOptions.getEpochs();
         final int numTrees = trainingOptions.getLayerSize();
 
@@ -30,7 +32,7 @@ public class RandomForestClassificationTrainer implements MLClassificationTraine
 
         final List<Object> classifications = new ArrayList<>();
 
-        for (MLClassificationTrainerRecord record : data) {
+        for (MLClassificationRecord record : data) {
             final Object classification = record.getClassification();
 
             int classificationIndex = classifications.indexOf(classification);
@@ -39,7 +41,7 @@ public class RandomForestClassificationTrainer implements MLClassificationTraine
                 classificationIndex = classifications.size() - 1;
             }
 
-            final double[] features = record.getFeatureValues();
+            final double[] features = MLFeatureUtils.generateFeatureValues(record, featureModifiers);
             trainingInstances.add(features);
             responseVariables.add(classificationIndex);
         }
@@ -60,7 +62,8 @@ public class RandomForestClassificationTrainer implements MLClassificationTraine
 
         final RandomForest randomForest = new RandomForest(x, y, numTrees);
         final MLClassificationMetadata classificationMetadata =
-                new MLClassificationMetadata(trainingOptions.getClassificationType(), classifications, trainingOptions.getFeatureNames());
+                new MLClassificationMetadata(trainingOptions.getClassificationType(), classifications,
+                        trainingOptions.getColumnNames(), featureModifiers);
         return new SmileClassifier(randomForest, classificationMetadata);
     }
 

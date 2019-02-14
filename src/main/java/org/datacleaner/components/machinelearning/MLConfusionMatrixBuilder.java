@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.datacleaner.components.machinelearning.api.MLClassification;
 import org.datacleaner.components.machinelearning.api.MLClassificationMetadata;
-import org.datacleaner.components.machinelearning.api.MLClassificationTrainerRecord;
+import org.datacleaner.components.machinelearning.api.MLClassificationRecord;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
 import org.datacleaner.result.Crosstab;
 import org.datacleaner.result.CrosstabDimension;
@@ -38,10 +38,10 @@ public class MLConfusionMatrixBuilder {
         }
     }
 
-    public void append(MLClassificationTrainerRecord record) {
+    public void append(MLClassificationRecord record) {
         final MLClassificationMetadata metadata = classifier.getMetadata();
 
-        final MLClassification result = classifier.classify(record.getFeatureValues());
+        final MLClassification result = classifier.classify(record);
         final String actual = getClassificationLabel(metadata.getClassification(result.getBestClassificationIndex()));
         final String expected = getClassificationLabel(record.getClassification());
 

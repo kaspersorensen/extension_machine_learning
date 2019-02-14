@@ -7,15 +7,18 @@ import java.util.List;
 public final class MLClassificationMetadata implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private final Class<?> classificationType;
     private final List<Object> classifications;
-    private final List<String> featureNames;
+    private final List<String> columnNames;
+    private final List<MLFeatureModifier> featureModifiers;
 
-    public MLClassificationMetadata(Class<?> classificationType, List<Object> classifications, List<String> featureNames) {
+    public MLClassificationMetadata(Class<?> classificationType, List<Object> classifications, List<String> columnNames,
+            List<MLFeatureModifier> featureModifiers) {
         this.classificationType = classificationType;
         this.classifications = classifications;
-        this.featureNames = featureNames;
+        this.columnNames = columnNames;
+        this.featureModifiers = featureModifiers;
     }
 
     public int getClassCount() {
@@ -30,12 +33,16 @@ public final class MLClassificationMetadata implements Serializable {
         return Collections.unmodifiableList(classifications);
     }
 
-    public int getFeatureCount() {
-        return featureNames.size();
+    public int getColumnCount() {
+        return columnNames.size();
     }
-    
-    public List<String> getFeatureNames() {
-        return Collections.unmodifiableList(featureNames);
+
+    public List<String> getColumnNames() {
+        return Collections.unmodifiableList(columnNames);
+    }
+
+    public List<MLFeatureModifier> getFeatureModifiers() {
+        return Collections.unmodifiableList(featureModifiers);
     }
 
     public Class<?> getClassificationType() {

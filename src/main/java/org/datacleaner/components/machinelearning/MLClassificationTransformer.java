@@ -19,9 +19,9 @@ import org.datacleaner.api.OutputColumns;
 import org.datacleaner.api.Transformer;
 import org.datacleaner.api.Validate;
 import org.datacleaner.components.machinelearning.api.MLClassification;
-import org.datacleaner.components.machinelearning.api.MLClassificationTrainerRecord;
+import org.datacleaner.components.machinelearning.api.MLClassificationRecord;
 import org.datacleaner.components.machinelearning.api.MLClassifier;
-import org.datacleaner.components.machinelearning.impl.MLClassificationTrainerRecordImpl;
+import org.datacleaner.components.machinelearning.impl.MLClassificationRecordImpl;
 
 import com.google.common.io.Files;
 
@@ -35,7 +35,7 @@ public class MLClassificationTransformer implements Transformer {
     }
 
     @Configured
-    InputColumn<Number>[] features;
+    InputColumn<Object>[] features;
 
     @Configured
     @FileProperty(accessMode = FileAccessMode.OPEN, extension = ".model.ser")
@@ -53,7 +53,7 @@ public class MLClassificationTransformer implements Transformer {
         }
         classifier = (MLClassifier) SerializationUtils.deserialize(Files.toByteArray(modelFile));
 
-        final int modelFeatures = classifier.getMetadata().getFeatureCount();
+        final int modelFeatures = classifier.getMetadata().getColumnCount();
         if (features.length > modelFeatures) {
             throw new IllegalArgumentException("Model defines " + modelFeatures + " features, but too few ("
                     + features.length + ") are configured.");
@@ -101,8 +101,8 @@ public class MLClassificationTransformer implements Transformer {
 
     @Override
     public Object[] transform(InputRow inputRow) {
-        final MLClassificationTrainerRecord record = MLClassificationTrainerRecordImpl.of(inputRow, null, features);
-        final MLClassification classification = classifier.classify(record.getFeatureValues());
+        final MLClassificationRecord record = MLClassificationRecordImpl.forEvaluation(inputRow, features);
+        final MLClassification classification = classifier.classify(record);
         final int bestClassificationIndex = classification.getBestClassificationIndex();
         final double confidence = classification.getConfidence(bestClassificationIndex);
         final Object classificationValue = classifier.getMetadata().getClassification(bestClassificationIndex);
