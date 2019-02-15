@@ -1,4 +1,4 @@
-package org.datacleaner.components.machinelearning;
+package org.datacleaner.components.machinelearning.ui;
 
 import javax.inject.Inject;
 import javax.swing.JComponent;
@@ -6,6 +6,7 @@ import javax.swing.JComponent;
 import org.datacleaner.api.Provided;
 import org.datacleaner.api.RendererBean;
 import org.datacleaner.bootstrap.WindowContext;
+import org.datacleaner.components.machinelearning.MLAnalyzerResult;
 import org.datacleaner.panels.DCPanel;
 import org.datacleaner.result.Crosstab;
 import org.datacleaner.result.CrosstabResult;

@@ -54,12 +54,12 @@ import com.google.common.io.Files;
 @Categorized(MachineLearningCategory.class)
 public class MLTrainingAnalyzer implements Analyzer<MLAnalyzerResult> {
 
+    public static final String PROPERTY_FEATURE_COLUMNS = "Features";
+    public static final String PROPERTY_FEATURE_MODIFIERS = "Feature modifier types";
+    
     private static final Logger logger = LoggerFactory.getLogger(MLTrainingAnalyzer.class);
     private static final MLFeatureModifierBuilderFactory featureModifierBuilderFactory =
             new MLFeatureModifierBuilderFactoryImpl();
-
-    private static final String PROPERTY_FEATURE_COLUMNS = "Features";
-    private static final String PROPERTY_FEATURE_MODIFIERS = "Feature modifier types";
 
     @Configured
     InputColumn<?> classification;

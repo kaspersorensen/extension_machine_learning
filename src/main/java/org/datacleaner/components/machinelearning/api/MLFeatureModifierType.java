@@ -1,6 +1,10 @@
 package org.datacleaner.components.machinelearning.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.metamodel.util.HasName;
+import org.datacleaner.util.ReflectionUtils;
 
 /**
  * Represents the types of functions can be applied to columns for transforming them into features. The functions are
@@ -8,11 +12,11 @@ import org.apache.metamodel.util.HasName;
  */
 public enum MLFeatureModifierType implements HasName {
 
+    SCALED_MIN_MAX("Scaled (Min-Max)", Number.class),
+    
     DIRECT_NUMERIC("Direct (0.0 to 1.0)", Number.class),
 
     DIRECT_BOOL("Direct (1 or 0)", Boolean.class),
-
-    SCALED_MIN_MAX("Scaled (Min-Max)", Number.class),
 
     VECTOR_ONE_HOT_ENCODING("Vector (One Hot Encoding)", String.class),
 
@@ -55,5 +59,15 @@ public enum MLFeatureModifierType implements HasName {
             return MLFeatureModifierType.VECTOR_5_GRAM;
         }
         throw new UnsupportedOperationException("No n-gram vector defined for n=" + n);
+    }
+
+    public static List<MLFeatureModifierType> getApplicableValues(Class<?> dataType) {
+        final List<MLFeatureModifierType> result = new ArrayList<>();
+        for (MLFeatureModifierType featureModifierType : values()) {
+            if (ReflectionUtils.is(dataType, featureModifierType.getApplicableDataType())) {
+                result.add(featureModifierType);
+            }
+        }
+        return result;
     }
 }

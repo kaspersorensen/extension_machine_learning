@@ -5,4 +5,4 @@ Things that will need to be improved for it to be a somewhat useful MVP:
 [x] N-gram feature generator
 [ ] Add a "max n-grams" and "max hot-one values" parameter
 [ ] Add icons
-[ ] Make the UI hide inappropriate/impossible FeatureModifierType mappings
+[x] Make the UI hide inappropriate/impossible FeatureModifierType mappings
