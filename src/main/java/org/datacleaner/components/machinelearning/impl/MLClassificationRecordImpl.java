@@ -14,7 +14,8 @@ public final class MLClassificationRecordImpl implements MLClassificationRecord 
 
     public static MLClassificationRecord forEvaluation(InputRow row, InputColumn<?>[] featureColumns) {
         final List<Object> values = row.getValues(featureColumns);
-        final MLClassificationRecord record = new MLClassificationRecordImpl(null, values.toArray(Object[]::new));
+        final MLClassificationRecord record = new MLClassificationRecordImpl(null, values.toArray(new Object[values
+                .size()]));
         return record;
     }
 
@@ -31,8 +32,8 @@ public final class MLClassificationRecordImpl implements MLClassificationRecord 
             return null;
         }
         final List<Object> values = row.getValues(featureColumns);
-        final MLClassificationRecord record =
-                new MLClassificationRecordImpl(classificationValue, values.toArray(Object[]::new));
+        final MLClassificationRecord record = new MLClassificationRecordImpl(classificationValue, values.toArray(
+                new Object[values.size()]));
         return record;
     }
 

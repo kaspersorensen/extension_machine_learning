@@ -33,7 +33,7 @@ public class VectorNGramFeatureModifier implements MLFeatureModifier {
 
     public VectorNGramFeatureModifier(int n, Collection<String> grams) {
         this.n = n;
-        this.grams = grams.toArray(String[]::new);
+        this.grams = grams.toArray(new String[grams.size()]);
     }
 
     @Override

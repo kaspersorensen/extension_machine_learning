@@ -31,18 +31,19 @@ public class MLTrainingAnalyzerPresenter extends AnalyzerComponentBuilderPanel {
         super(analyzerJobBuilder, propertyWidgetFactory);
         _overriddenPropertyWidgets = new HashMap<>();
 
-        final ConfiguredPropertyDescriptor featureColumnsProperty =
-                analyzerJobBuilder.getDescriptor().getConfiguredProperty(MLTrainingAnalyzer.PROPERTY_FEATURE_COLUMNS);
-        final ConfiguredPropertyDescriptor featureModifierTypesProperty =
-                analyzerJobBuilder.getDescriptor().getConfiguredProperty(MLTrainingAnalyzer.PROPERTY_FEATURE_MODIFIERS);
+        final ConfiguredPropertyDescriptor featureColumnsProperty = analyzerJobBuilder.getDescriptor()
+                .getConfiguredProperty(MLTrainingAnalyzer.PROPERTY_FEATURE_COLUMNS);
+        final ConfiguredPropertyDescriptor featureModifierTypesProperty = analyzerJobBuilder.getDescriptor()
+                .getConfiguredProperty(MLTrainingAnalyzer.PROPERTY_FEATURE_MODIFIERS);
         final MultipleMappedEnumsPropertyWidget mappingWidget = new MultipleMappedEnumsPropertyWidget(
                 analyzerJobBuilder, featureColumnsProperty, featureModifierTypesProperty) {
             @Override
             protected EnumerationValue[] getEnumConstants(InputColumn<?> inputColumn,
                     ConfiguredPropertyDescriptor mappedEnumsProperty) {
-                final List<MLFeatureModifierType> applicableValues =
-                        MLFeatureModifierType.getApplicableValues(inputColumn.getDataType());
-                return EnumerationValue.fromArray(applicableValues.toArray(MLFeatureModifierType[]::new));
+                final List<MLFeatureModifierType> applicableValues = MLFeatureModifierType.getApplicableValues(
+                        inputColumn.getDataType());
+                return EnumerationValue.fromArray(applicableValues.toArray(new MLFeatureModifierType[applicableValues
+                        .size()]));
             }
         };
 
